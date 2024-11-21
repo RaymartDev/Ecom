@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",                  // Target latest JavaScript version
+    "module": "CommonJS",                // Use CommonJS module system for Node.js
+    "lib": ["ESNext"],                   // Use latest library definitions
+    "outDir": "./dist",                  // Directory for compiled output
+    "rootDir": "./src",                  // Root directory of input files
+    "strict": true,                      // Enable all strict type-checking options
+    "esModuleInterop": true,             // Enable interoperability between CommonJS and ES modules
+    "skipLibCheck": true,                // Skip type checking of declaration files
+    "forceConsistentCasingInFileNames": true, // Ensure file names are case-consistent
+    "noImplicitAny": true,               // Raise error on expressions and declarations with an implied 'any' type
+    "resolveJsonModule": true,           // Allow importing .json files
+    "types": ["node", "express"]         // Include type definitions for Node.js and Express
+  },
+  "include": ["src/**/*"],               // Include all files in src directory
+  "exclude": ["node_modules", "dist"]    // Exclude node_modules and dist directories
+}
