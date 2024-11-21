@@ -23,10 +23,31 @@ Make sure you have the following installed on your system:
 - [npm](https://www.npmjs.com/) or [Yarn](https://yarnpkg.com/)
 - [Git](https://git-scm.com/)
 
-### Clone the repository
+### Usage
 
-Clone the project to your local machine:
+- **Browse Products:** Visit the homepage to explore products by category.
+- **Search:** Use the search bar to quickly find products.
+- **Add to Cart:** Click on the "Add to Cart" button to add items to your shopping cart.
+- **Checkout: Proceed** to checkout to complete your order.
+- **Admin Panel:** Admins can log in to the admin panel to manage products, categories, and orders.
 
-```bash
-git clone https://github.com/yourusername/e-commerce.git
-cd e-commerce
+### Technologies Used
+
+- Frontend:
+  - React
+  - Vite
+  - TailwindCSS
+  - TypeScript
+- Backend
+  - Node JS
+  - Express
+  - Typescript
+  - Prisma ORM
+  - JWT
+
+### Contributors
+- Raymart Sarmiento  (**_RaymartDev_**)
+- Leansel Nico Ortega (**_Leaseln_**)
+
+### License
+This project is licensed under the MIT License - see the LICENSE file for details.
