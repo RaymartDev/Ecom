@@ -3,12 +3,11 @@ import helmet from 'helmet';
 import cors from 'cors';
 import morgan from 'morgan';
 import cookieParser from "cookie-parser";
-
 import api from './api';
-
 import * as middlewares from './middlewares';
+import dotenv from 'dotenv';
 
-require('dotenv').config();
+dotenv.config();
 
 const app = express();
 

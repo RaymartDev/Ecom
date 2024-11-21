@@ -1,5 +1,35 @@
 import { NextFunction, Request, Response } from 'express';
 import ErrorResponse from './interfaces/ErrorResponse';
+import jwt from 'jsonwebtoken';
+import prisma from './prisma';
+import DecodedToken from './interfaces/DecodedToken';
+import UserRequest from './interfaces/UserRequest';
+
+export const isAuthenticated = async (req: UserRequest, res: Response, next: NextFunction): Promise<void> => {
+    const token = req.headers.authorization?.split(' ')[1];
+
+    if (!token) {
+        next(new Error('Not authorized, no token'));
+        return;
+    }
+
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secret') as DecodedToken;
+
+        req.user = await prisma.user.findUnique({
+            where: { id: decoded.id },
+            select: { id: true, name: true, email: true },
+        });
+
+        if (!req.user) {
+            next(new Error('Not authorized, user not found'));
+            return;
+        }
+        next();
+    } catch (error) {
+        next(new Error('Not authorized, token failed'));
+    }
+};
 
 export function notFound(req: Request, res: Response, next: NextFunction) {
     res.status(404);
