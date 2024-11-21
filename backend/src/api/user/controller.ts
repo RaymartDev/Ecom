@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
-import prisma from '../../prisma';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import UserRequest from '../../interfaces/UserRequest';
+import { createUser, findUserByEmail, findUserByEmailWPass, findUserById } from './service';
 
 const generateToken = (id: number) => {
   return jwt.sign({ id }, process.env.JWT_SECRET || 'secret', { expiresIn: '30d' });
@@ -11,7 +11,7 @@ const generateToken = (id: number) => {
 export const registerUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const { name, email, password } = req.body;
   try {
-    const existingUser = await prisma.user.findUnique({ where: { email } });
+    const existingUser = await findUserByEmail(email);
     if (existingUser) {
       next(new Error('User already exists'));
       return;
@@ -19,20 +19,22 @@ export const registerUser = async (req: Request, res: Response, next: NextFuncti
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const newUser = await prisma.user.create({
-      data: {
-        name,
-        email,
-        password: hashedPassword,
-      }
+    const newUser = await createUser({
+      name,
+      email,
+      password: hashedPassword,
     });
 
-    res.status(200).json({
-      id: newUser.id,
-      name: newUser.name,
-      email: newUser.email,
-      token: generateToken(newUser.id),
-    });
+    if (newUser) {
+      res.status(200).json({
+        id: newUser.id,
+        name: newUser.name,
+        email: newUser.email,
+        token: generateToken(newUser.id || 0),
+      });
+    } else {
+      next(new Error('Something went wrong!'));
+    }
   } catch (error) {
     next(new Error('Failed to register user'));
   }
@@ -43,25 +45,29 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
 
   try {
     // Check if user exists
-    const user = await prisma.user.findUnique({ where: { email } });
+    const user = await findUserByEmailWPass(email);
     if (!user) {
       next(new Error('Invalid email or password!'));
       return;
     }
 
     // Validate password
-    const isMatch = await bcrypt.compare(password, user.password);
+    const isMatch = await bcrypt.compare(password, user.password || '');
     if (!isMatch) {
       next(new Error('Invalid email or password!'));
       return;
     }
 
-    res.status(200).json({
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      token: generateToken(user.id),
-    });
+    if (user) {
+      res.status(200).json({
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        token: generateToken(user.id || 0),
+      });
+    } else {
+      next(new Error('Something went wrong!'));
+    }
   } catch (error) {
     next(new Error('Failed to login'));
   }
@@ -72,10 +78,7 @@ export const getUserProfile = async (req: UserRequest, res: Response, next: Next
   const userId = req.user?.id;
 
   try {
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
-      select: { id: true, name: true, email: true, createdAt: true },
-    });
+    const user = await findUserById(userId || 0);
 
     if (!user) {
       next(new Error('User not found'));

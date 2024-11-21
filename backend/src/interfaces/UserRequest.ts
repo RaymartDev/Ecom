@@ -1,6 +1,6 @@
 import { Request } from 'express';
-import DecodedToken from './DecodedToken';
+import { User } from '@prisma/client'
 
 export default interface UserRequest extends Request {
-  user?: DecodedToken | null;
+  user?: Partial<User> | null;
 }

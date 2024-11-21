@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 import prisma from './prisma';
 import DecodedToken from './interfaces/DecodedToken';
 import UserRequest from './interfaces/UserRequest';
+import { findUserById } from './api/user/service';
 
 export const isAuthenticated = async (req: UserRequest, res: Response, next: NextFunction): Promise<void> => {
     const token = req.headers.authorization?.split(' ')[1];
@@ -16,10 +17,7 @@ export const isAuthenticated = async (req: UserRequest, res: Response, next: Nex
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secret') as DecodedToken;
 
-        req.user = await prisma.user.findUnique({
-            where: { id: decoded.id },
-            select: { id: true, name: true, email: true },
-        });
+        req.user = await findUserById(decoded.id);
 
         if (!req.user) {
             next(new Error('Not authorized, user not found'));
