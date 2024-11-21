@@ -24,26 +24,43 @@ model User {
 }
 
 model Product {
-  id          Int      @id @default(autoincrement())
+  id          Int         @id @default(autoincrement())
   name        String
   description String
   price       Float
   stock       Int
-  category    Category @relation(fields: [categoryId], references: [id])
+  category    Category    @relation(fields: [categoryId], references: [id])
   categoryId  Int
-  createdAt   DateTime @default(now())
+  createdAt   DateTime    @default(now())
+  orderItems  OrderItem[]
+
+  @@index([name])
+  @@index([description])
 }
 
 model Order {
-  id        Int      @id @default(autoincrement())
-  user      User     @relation(fields: [userId], references: [id])
-  userId    Int
-  status    String   @default("Pending")
-  createdAt DateTime @default(now())
+  id         Int         @id @default(autoincrement())
+  user       User        @relation(fields: [userId], references: [id])
+  userId     Int
+  status     String      @default("Pending")
+  createdAt  DateTime    @default(now())
+  orderItems OrderItem[]
+}
+
+model OrderItem {
+  id        Int     @id @default(autoincrement())
+  order     Order   @relation(fields: [orderId], references: [id])
+  orderId   Int
+  product   Product @relation(fields: [productId], references: [id])
+  productId Int
+  quantity  Int
+  price     Float // Price at the time of the order (in case the product price changes later)
 }
 
 model Category {
   id       Int       @id @default(autoincrement())
   name     String
   products Product[]
+
+  @@index([name])
 }
