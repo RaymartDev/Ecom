@@ -3,15 +3,15 @@ import { NextFunction, Response } from 'express';
 import { createProductRecord, deleteProductRecord, updateProductRecord } from './service';
 
 export const createProduct = async (req: UserRequest, res: Response, next: NextFunction) => {
-  const { name, description, price, stock, categoryId } = req.body;
+  const { name, description, price, stock, categoryId, brandId } = req.body;
 
-  if (!name || !description || price === undefined || stock === undefined || !categoryId) {
+  if (!name || !description || price === undefined || stock === undefined || !categoryId || !brandId) {
     next(new Error('All fields are required'));
     return;
   }
 
   try {
-    const product = await createProductRecord({ name, description, price, stock, categoryId });
+    const product = await createProductRecord({ name, description, price, stock, categoryId, brandId });
     res.status(201).json(product);
   } catch (error) {
     next(error);
@@ -31,8 +31,8 @@ export const deleteProduct = async (req: UserRequest, res: Response, next: NextF
 
 export const updateProduct = async (req: UserRequest, res: Response, next: NextFunction) => {
   const { id } = req.params;
-  const { name, description, price, stock, categoryId } = req.body;
-  const updateData: { name?: string; description?: string; price?: number; stock?: number; categoryId?: number } = {};
+  const { name, description, price, stock, categoryId, brandId } = req.body;
+  const updateData: { name?: string; description?: string; price?: number; stock?: number; categoryId?: number; brandId?: number; } = {};
 
 // Conditionally add fields only if they're provided
   if (name) updateData.name = name;
@@ -40,6 +40,7 @@ export const updateProduct = async (req: UserRequest, res: Response, next: NextF
   if (price !== undefined) updateData.price = price;
   if (stock !== undefined) updateData.stock = stock;
   if (categoryId !== undefined) updateData.categoryId = categoryId;
+  if (brandId !== undefined) updateData.brandId = brandId;
   try {
     const product = await updateProductRecord(Number(id), updateData);
     res.status(200).json(product);

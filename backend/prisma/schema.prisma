@@ -31,11 +31,21 @@ model Product {
   stock       Int
   category    Category    @relation(fields: [categoryId], references: [id])
   categoryId  Int
+  brand       Brand       @relation(fields: [brandId], references: [id])
+  brandId     Int
   createdAt   DateTime    @default(now())
   orderItems  OrderItem[]
 
   @@index([name])
   @@index([description])
+}
+
+model Brand {
+  id       Int       @id @default(autoincrement())
+  name     String
+  products Product[]
+
+  @@index([name])
 }
 
 model Order {

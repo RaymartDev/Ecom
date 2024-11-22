@@ -7,6 +7,7 @@ export const createProductRecord = (product: {
   price: number,
   stock: number,
   categoryId: number,
+  brandId: number,
 }): Promise<Product> => {
   return prisma.product.create({
     data: {
@@ -21,6 +22,7 @@ export const updateProductRecord= (id: number = 0,product: Partial<{
   price: number,
   stock: number,
   categoryId: number,
+  brandId: number,
 }>): Promise<Product> => {
   return prisma.product.update({
     where: { id, },
