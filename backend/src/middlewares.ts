@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import ErrorResponse from './interfaces/ErrorResponse';
 import jwt from 'jsonwebtoken';
-import prisma from './prisma';
 import DecodedToken from './interfaces/DecodedToken';
 import UserRequest from './interfaces/UserRequest';
 import { findUserById } from './api/user/service';

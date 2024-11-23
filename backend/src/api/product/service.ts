@@ -1,37 +1,27 @@
 import prisma from '../../prisma';
-import { Product} from '@prisma/client';
 
+// Create a new product
 export const createProductRecord = (product: {
-  name: string,
-  description: string,
-  price: number,
-  stock: number,
-  categoryId: number,
-  brandId: number,
-}): Promise<Product> => {
-  return prisma.product.create({
-    data: {
-      ...product,
-    },
-  })
-}
+  name: string;
+  description: string;
+  price: number;
+  stock: number;
+  categoryId: number;
+  brandId: number;
+}) =>
+  prisma.product.create({ data: product });
 
-export const updateProductRecord= (id: number = 0,product: Partial<{
-  name: string,
-  description: string,
-  price: number,
-  stock: number,
-  categoryId: number,
-  brandId: number,
-}>): Promise<Product> => {
-  return prisma.product.update({
-    where: { id, },
-    data: { ...product, },
-  })
-}
+// Update an existing product
+export const updateProductRecord = (id: number, product: Partial<{
+  name: string;
+  description: string;
+  price: number;
+  stock: number;
+  categoryId: number;
+  brandId: number;
+}>) =>
+  prisma.product.update({ where: { id }, data: product });
 
-export const deleteProductRecord = async (id: number = 0): Promise<void> => {
-  prisma.product.delete({
-    where: { id, },
-  })
-}
+// Delete a product by ID
+export const deleteProductRecord = (id: number) =>
+  prisma.product.delete({ where: { id } }).then(() => {});

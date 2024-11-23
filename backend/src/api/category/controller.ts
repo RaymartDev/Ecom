@@ -1,6 +1,12 @@
 import UserRequest from '../../interfaces/UserRequest';
 import { NextFunction, Response } from 'express';
-import { createCategoryRecord, deleteCategoryRecord, findCategoryByName, updateCategoryRecord } from './service';
+import {
+  createCategoryRecord,
+  deleteCategoryRecord,
+  findCategoryByName,
+  readAllCategoriesRecord, readCategoryRecord,
+  updateCategoryRecord
+} from './service';
 
 export const createCategory = async (req: UserRequest, res: Response, next: NextFunction) => {
   const { name } = req.body;
@@ -56,4 +62,27 @@ export const updateCategory = async (req: UserRequest, res: Response, next: Next
   }
 };
 
-// TODO: READ ONE, ALL, AND SEARCH
+export const readAllCategories = async (_req: UserRequest, res: Response, next: NextFunction) => {
+  try {
+    const categories = await readAllCategoriesRecord();
+    res.status(200).json(categories);
+  } catch (error) {
+    next(error);
+  }
+}
+
+export const readCategory = async (req: UserRequest, res: Response, next: NextFunction) => {
+  const { id } = req.params;
+  try {
+    const category = await readCategoryRecord(Number(id));
+    if (!category) {
+      next(new Error('Category not found'));
+      return;
+    }
+    res.status(200).json(category);
+  } catch (error) {
+    next(error);
+  }
+}
+
+// TODO: PAGINATED AND SEARCH
