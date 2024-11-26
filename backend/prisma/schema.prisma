@@ -81,4 +81,6 @@ model ShoppingCart {
   productId Int
   quantity  Int      @default(1) // Items can be updated in the cart.
   createdAt DateTime @default(now())
+
+  @@unique([userId, productId]) // Composite unique constraint
 }
