@@ -28,6 +28,14 @@ export const isAuthenticated = async (req: UserRequest, res: Response, next: Nex
     }
 };
 
+export const isAdmin = (req: UserRequest, res: Response, next: NextFunction) => {
+    if (!req.user?.isAdmin) {
+        next(new Error("Admin access required"));
+        return;
+    }
+    next();
+};
+
 export function notFound(req: Request, res: Response, next: NextFunction) {
     res.status(404);
     const error = new Error(`🔍 - Not Found - ${req.originalUrl}`);
